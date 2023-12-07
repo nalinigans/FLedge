@@ -1,18 +1,8 @@
 # FLedge
-Experiments with Federated Ledgering
+Experiments with Federated Ledgering based on https://mycoralhealth.medium.com/code-your-own-blockchain-in-less-than-200-lines-of-go-e296282bcffc
 
-go run main.go
-Output on terminal
-```
-2023/12/07 13:10:29 Listening on  8080
-main.Block) {
- Index: (int) 0,
- Timestamp: (string) (len=51) "2023-12-07 13:10:29.314228 -0800 PST m=+0.001643335",
- BPM: (int) 0,
- Hash: (string) "",
- PrevHash: (string) ""
-}
-```
+From terminal : go run main.go
+
 Navigate to localhost:8080 and see the first block posted
 ```
 [
