@@ -19,7 +19,7 @@ import (
 type Block struct {
 	Index     int
 	Timestamp string
-	BPM       int // heart beats/minute
+	MyMetric  int
 	Hash      string
 	PrevHash  string
 }
@@ -27,25 +27,21 @@ type Block struct {
 var Blockchain []Block
 
 func calculateHash(block Block) string {
-	record := string(block.Index) + block.Timestamp + string(block.BPM) + block.PrevHash
+	record := string(block.Index) + block.Timestamp + string(block.MyMetric) + block.PrevHash
 	h := sha256.New()
 	h.Write([]byte(record))
 	hashed := h.Sum(nil)
 	return hex.EncodeToString(hashed)
 }
 
-func generateBlock(oldBlock Block, BPM int) (Block, error) {
-
+func generateBlock(oldBlock Block, myMetric int) (Block, error) {
 	var newBlock Block
-
 	t := time.Now()
-
 	newBlock.Index = oldBlock.Index + 1
 	newBlock.Timestamp = t.String()
-	newBlock.BPM = BPM
+	newBlock.MyMetric = myMetric
 	newBlock.PrevHash = oldBlock.Hash
 	newBlock.Hash = calculateHash(newBlock)
-
 	return newBlock, nil
 }
 
@@ -53,15 +49,12 @@ func isBlockValid(newBlock, oldBlock Block) bool {
 	if oldBlock.Index+1 != newBlock.Index {
 		return false
 	}
-
 	if oldBlock.Hash != newBlock.PrevHash {
 		return false
 	}
-
 	if calculateHash(newBlock) != newBlock.Hash {
 		return false
 	}
-
 	return true
 }
 
@@ -77,11 +70,11 @@ var bcServer chan []Block
 func handleConn(conn net.Conn) {
 	defer conn.Close()
 
-	io.WriteString(conn, "Enter a new BPM:")
+	io.WriteString(conn, "Enter a new metric:")
 
 	scanner := bufio.NewScanner(conn)
 
-	// take in BPM from stdin and add it to blockchain after conducting necessary validation
+	// take in metric from stdin and add it to blockchain after conducting necessary validation
 	go func() {
 		for scanner.Scan() {
 			bpm, err := strconv.Atoi(scanner.Text())
@@ -100,7 +93,7 @@ func handleConn(conn net.Conn) {
 			}
 
 			bcServer <- Blockchain
-			io.WriteString(conn, "\nEnter a new BPM:")
+			io.WriteString(conn, "\nEnter a new metric:")
 		}
 	}()
 

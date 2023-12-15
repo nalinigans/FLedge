@@ -12,5 +12,5 @@ go run main.go
 
 ``` bash
 # From another terminal
-nc localhist 9000
+nc localhost 9000
 ```
